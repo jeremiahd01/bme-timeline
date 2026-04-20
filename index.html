@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>History — Weldon School of Biomedical Engineering | Purdue University</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── Purdue Brand Variables ── */
+    :root {
+      --pu-gold:         #CFB991;
+      --pu-black:        #000000;
+      --pu-white:        #FFFFFF;
+      --pu-aged:         #8E6F3E;
+      --pu-rush:         #DAAA00;
+      --pu-field:        #DDB945;
+      --pu-dust:         #EBD99F;
+      --pu-steel:        #555960;
+      --pu-cool-gray:    #6F727B;
+      --pu-railway-gray: #9D9795;
+      --pu-steam:        #C4BFC0;
+
+      --pu-font-sans:    'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      --pu-font-serif:   'Source Serif 4', Georgia, serif;
+      --pu-font-display: Impact, 'Arial Narrow', Arial, sans-serif;
+
+      /* Bootstrap overrides */
+      --bs-primary:          #CFB991;
+      --bs-primary-rgb:      207,185,145;
+      --bs-body-font-family: var(--pu-font-sans);
+      --bs-body-color:       #000000;
+      --bs-link-color:       var(--pu-aged);
+      --bs-link-hover-color: var(--pu-black);
+
+      --card-border:  var(--card-border);  /* warm card border */
+      --card-divider: var(--card-divider);  /* subtle event row divider */
+      --spine-width: 3px;
+      --card-gap:    48px;
+    }
+
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      background: var(--pu-white);
+      color: var(--pu-black);
+      font-family: var(--pu-font-sans);
+      overflow-x: hidden;
+    }
+
+    /* ── Page Header ── */
+    .page-header {
+      background: var(--pu-black);
+      border-bottom: 4px solid var(--pu-gold);
+      padding: 2.5rem 2rem 2rem;
+    }
+    .page-header__eyebrow {
+      font-family: var(--pu-font-sans);
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--pu-gold);
+      margin-bottom: 0.35rem;
+    }
+    .page-header__title {
+      font-family: var(--pu-font-display);
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--pu-white);
+      margin: 0 0 0.5rem;
+      line-height: 1;
+    }
+    .page-header__title span {
+      color: var(--pu-gold);
+    }
+    .page-header__desc {
+      font-family: var(--pu-font-serif);
+      font-size: 1rem;
+      color: var(--pu-steam);
+      max-width: 560px;
+      margin: 0;
+      font-style: italic;
+    }
+
+    /* ── Decade anchor offset (for sticky header clearance) ── */
+    .decade-anchor {
+      display: block;
+      height: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    /* ── Timeline Section ── */
+    .timeline-section {
+      padding: 4rem 0 8rem;
+      position: relative;
+    }
+
+    /* ── Timeline Wrapper: three-column layout ── */
+    .timeline-wrapper {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 80px 0 40px; /* right padding leaves room for sticky nav */
+    }
+
+    /* Continuous spine line via pseudo-element */
+    .timeline-wrapper::before {
+      content: '';
+      position: absolute;
+      left: calc(50% + 20px); /* offset for the 40px left padding asymmetry */
+      top: 0;
+      bottom: 0;
+      width: var(--spine-width);
+      background: linear-gradient(to bottom, transparent, var(--pu-gold) 60px, var(--pu-gold) calc(100% - 60px), transparent);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    /* ── Timeline Row ── */
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 1fr;
+      gap: 0;
+      margin-bottom: 3.5rem;
+      align-items: start;
+      position: relative;
+    }
+
+    .tl-left,
+    .tl-right {
+      min-height: 1px;
+    }
+
+    .tl-left {
+      padding-right: var(--card-gap);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .tl-right {
+      padding-left: var(--card-gap);
+    }
+
+    .tl-spine {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      padding-top: 1.25rem;
+    }
+
+    /* ── Spine node: diamond + year ── */
+    .spine-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spine-diamond {
+      width: 14px;
+      height: 14px;
+      background: var(--pu-gold);
+      transform: rotate(45deg);
+      border: 2px solid var(--pu-aged);
+      flex-shrink: 0;
+    }
+
+    .year-label {
+      font-family: var(--pu-font-display);
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      color: var(--pu-steel);
+      text-transform: uppercase;
+      white-space: nowrap;
+      background: var(--pu-white);
+      padding: 2px 6px;
+      border-bottom: 2px solid var(--pu-gold);
+    }
+
+    /* ── Connector lines (left card → spine, right card → spine) ── */
+    .tl-left .timeline-card::after,
+    .tl-right .timeline-card::after {
+      content: '';
+      position: absolute;
+      top: 2rem;
+      height: 2px;
+      background: var(--pu-gold);
+      width: calc(var(--card-gap) + 8px);
+      pointer-events: none;
+    }
+
+    .tl-left .timeline-card {
+      position: relative;
+    }
+    .tl-left .timeline-card::after {
+      right: calc(-1 * var(--card-gap) - 8px);
+    }
+
+    .tl-right .timeline-card {
+      position: relative;
+    }
+    .tl-right .timeline-card::after {
+      left: calc(-1 * var(--card-gap) - 8px);
+    }
+
+    /* ── Card ── */
+    .timeline-card {
+      background: var(--pu-white);
+      border: 1px solid var(--card-border);
+      border-top: 4px solid var(--pu-gold);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+      overflow: hidden;
+      width: 100%;
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .timeline-card:hover {
+      box-shadow: 0 6px 28px rgba(0,0,0,0.13);
+      transform: translateY(-2px);
+    }
+
+    /* ── Card Media ── */
+    .card-media {
+      overflow: hidden;
+      max-height: 280px;
+    }
+
+    .timeline-img {
+      width: 100%;
+      height: 100%;
+      max-height: 280px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .timeline-card:hover .timeline-img {
+      transform: scale(1.03);
+    }
+
+    /* ── Placeholder tile ── */
+    .timeline-img-placeholder {
+      width: 100%;
+      height: 180px;
+      background:
+        repeating-linear-gradient(
+          -45deg,
+          var(--pu-gold)     0px,
+          var(--pu-gold)     8px,
+          var(--pu-black)    8px,
+          var(--pu-black)   16px
+        );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .placeholder-year {
+      font-family: var(--pu-font-display);
+      font-size: 2.5rem;
+      letter-spacing: 0.1em;
+      color: var(--pu-white);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      text-transform: uppercase;
+    }
+
+    /* ── Card Body ── */
+    .card-body-inner {
+      padding: 1.1rem 1.25rem 1.4rem;
+    }
+
+    .events-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .events-list li {
+      font-family: var(--pu-font-sans);
+      font-size: 0.875rem;
+      line-height: 1.55;
+      color: var(--pu-steel);
+      padding: 0.55rem 0 0.55rem 0.85rem;
+      border-bottom: 1px solid var(--card-divider);
+      position: relative;
+    }
+
+    .events-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 5px;
+      background: var(--pu-gold);
+      border-radius: 50%;
+    }
+
+    .events-list li:last-child {
+      border-bottom: none;
+    }
+
+    .events-list a {
+      color: var(--pu-aged);
+      text-decoration: none;
+    }
+    .events-list a:hover {
+      color: var(--pu-black);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .ext-icon {
+      vertical-align: middle;
+      margin-left: 3px;
+      opacity: 0.6;
+    }
+
+    /* ── Sticky Side Navigation ── */
+    .timeline-nav {
+      position: fixed;
+      right: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 900;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .nav-connector {
+      width: 2px;
+      height: 28px;
+      background: var(--pu-steam);
+      transition: background 0.3s;
+    }
+
+    .nav-item {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--pu-white);
+      border: 2.5px solid var(--pu-railway-gray);
+      transition: background 0.25s, border-color 0.25s, transform 0.25s;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav-item:hover .nav-dot,
+    .nav-item.active .nav-dot {
+      background: var(--pu-gold);
+      border-color: var(--pu-aged);
+      transform: scale(1.35);
+    }
+
+    .nav-item.active ~ .nav-connector,
+    .nav-item.active + .nav-connector {
+      background: var(--pu-gold);
+    }
+
+    .nav-tooltip {
+      position: absolute;
+      right: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--pu-black);
+      color: var(--pu-gold);
+      font-family: var(--pu-font-display);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      border-left: 2px solid var(--pu-gold);
+    }
+
+    .nav-item:hover .nav-tooltip {
+      opacity: 1;
+    }
+
+    /* ── Scroll-in animation ── */
+    .timeline-row {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .timeline-row.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* ── Page Footer ── */
+    .page-footer {
+      background: var(--pu-black);
+      border-top: 3px solid var(--pu-gold);
+      padding: 2rem;
+      text-align: center;
+    }
+    .page-footer p {
+      color: var(--pu-railway-gray);
+      font-size: 0.8rem;
+      margin: 0;
+    }
+    .page-footer a {
+      color: var(--pu-gold);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .timeline-wrapper {
+        padding: 0 48px 0 24px;
+      }
+      .timeline-row {
+        grid-template-columns: 1fr 80px 1fr;
+      }
+      --card-gap: 32px;
+    }
+
+    @media (max-width: 640px) {
+      .timeline-wrapper {
+        padding: 0 16px;
+        max-width: 100%;
+      }
+      .timeline-wrapper::before {
+        left: 28px;
+        transform: none;
+      }
+      .timeline-row {
+        display: block;
+        padding-left: 56px;
+        margin-bottom: 2.5rem;
+      }
+      .tl-left,
+      .tl-right {
+        padding: 0;
+      }
+      .tl-spine {
+        position: absolute;
+        left: 16px;
+        top: 0;
+        width: 24px;
+        padding-top: 0;
+      }
+      .tl-left .timeline-card::after,
+      .tl-right .timeline-card::after {
+        display: none;
+      }
+      .timeline-nav {
+        display: none;
+      }
+      .page-header__title {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Page Header ── -->
+  <header class="page-header">
+    <div class="container-fluid" style="max-width:1100px">
+      <p class="page-header__eyebrow">Weldon School of Biomedical Engineering &mdash; Purdue University</p>
+      <h1 class="page-header__title">A History of <span>Innovation</span></h1>
+      <p class="page-header__desc">Five decades of biomedical discovery, education, and impact&mdash;from a single $500,000 gift to a world-leading research school.</p>
+    </div>
+  </header>
+
+  <!-- ── Sticky Decade Navigation ── -->
+  <nav class="timeline-nav" aria-label="Jump to decade">
+    
+    <div class="nav-item" data-target="decade-1970">
+      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 1970s">
+        <span class="nav-tooltip">1970s</span>
+      </div>
+    </div>
+    <div class="nav-connector"></div>
+    <div class="nav-item" data-target="decade-1980">
+      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 1980s">
+        <span class="nav-tooltip">1980s</span>
+      </div>
+    </div>
+    <div class="nav-connector"></div>
+    <div class="nav-item" data-target="decade-1990">
+      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 1990s">
+        <span class="nav-tooltip">1990s</span>
+      </div>
+    </div>
+    <div class="nav-connector"></div>
+    <div class="nav-item" data-target="decade-2000">
+      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 2000s">
+        <span class="nav-tooltip">2000s</span>
+      </div>
+    </div>
+    <div class="nav-connector"></div>
+    <div class="nav-item" data-target="decade-2010">
+      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 2010s">
+        <span class="nav-tooltip">2010s</span>
+      </div>
+    </div>
+    <div class="nav-connector"></div>
+    <div class="nav-item" data-target="decade-2020">
+      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 2020s">
+        <span class="nav-tooltip">2020s</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Timeline ── -->
+  <section class="timeline-section" aria-label="Timeline of Purdue BME history">
+    <div class="timeline-wrapper">
+  <div id="decade-2020" class="decade-anchor"></div>
+  <div class="timeline-row" id="year-2025" data-decade="2020" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><div class="timeline-img-placeholder" role="img" aria-label="Purdue BME 2025"><span class="placeholder-year">2025</span></div></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>28% increase in undergraduate class size results in &gt;600 undergraduate enrollment.</li>
+<li>Sponsored research expenditures exceed $20M, representing 47% annual growth.</li>
+<li class="has-link"><a href="https://engineering.purdue.edu/Engr/AboutUs/News/Spotlights/2025/2025-0915-Purdue-researcher-Krishna-Jayant-probes-innermost-circuits-of-brain" target="_blank" rel="noopener noreferrer">$7.5M grant to probe innermost circuits of the brain, the building blocks of cognition. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://www.purdue.edu/newsroom/2025/Q4/purdue-innovation-to-be-evaluated-in-international-study-for-earlier-identification-of-preeclampsia-risk/" target="_blank" rel="noopener noreferrer">Purdue BME Innovation to be tested globally for earlier preeclampsia detection. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/Engr/AboutUs/News/Spotlights/2025/2025-1124-Purdue-awarded-8M-from-DARPA-to-develop-healthcare-microsystem-that-provides-more-accessible-and-affordable-treatments" target="_blank" rel="noopener noreferrer">Purdue awarded $8M from DARPA to develop healthcare microsystem that provides more accessible and affordable treatments. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/IE/news/2025/duerstock-pitts-arpa-h" target="_blank" rel="noopener noreferrer">Purdue joins $41.5M ARP-H project to advance robotic assistive mobility for people with disabilities. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://www.purdue.edu/newsroom/2025/Q4/purdue-to-launch-musculoskeletal-center-in-indianapolis/?utm_source=sfmcPT&amp;utm_medium=email&amp;utm_campaign=251009PurdueToday+-+20251009_093216&amp;utm_term=Purdue+to+launch+musculoskeletal+center+in+Indianapolis&amp;utm_id=1175359" target="_blank" rel="noopener noreferrer">Purdue to launch musculoskeletal center in Indianapolis. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2025/purdue-bme-and-kist-receive-27m-brainlink-award-to-strengthen-global-collaboration-on-brain-health" target="_blank" rel="noopener noreferrer">Purdue BME and KIST Receive $2.7M BrainLink Award to strengthen global collaboration on Brain Health. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2025</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+    
+  <div class="timeline-row" id="year-2024" data-decade="2020" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2024</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><div class="timeline-img-placeholder" role="img" aria-label="Purdue BME 2024"><span class="placeholder-year">2024</span></div></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li class="has-link"><a href="http://www.youtube.com" target="_blank" rel="noopener noreferrer">A Celebration of 50 years of Biomedical Engineering at Purdue. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/Engr/AboutUs/News/Spotlights/2024/2024-1122-Celebrating-50-years-of-biomedical-engineering-at-Purdue" target="_blank" rel="noopener noreferrer">Celebrating 50 years of Biomedical Engineering and transformative innovations at Purdue. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2024/50year-history-of-biomedical-engineering-at-purdue" target="_blank" rel="noopener noreferrer">50-year history of Biomedical Engineering at Purdue. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2024/charles-babbs-celebrates-50-years-with-bme" target="_blank" rel="noopener noreferrer">Charlie Babs celebrates 50 years with BME. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li>Indianapolis location established, triggering explosive enrollment and research growth.</li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2024/jacqueline-linnes-pioneers-affordable-healthcare-diagnostics-with-2d-paper-network" target="_blank" rel="noopener noreferrer">Pioneering affordable healthcare diagnostics with 2D paper network. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2024/the-weldon-school-of-biomedical-engineering-officially-welcomes-kevin-otto-as-the-dane-a-miller-head-and-professor-" target="_blank" rel="noopener noreferrer">The Weldon School of Biomedical Engineering welcomes Kevin Otto as the Dane A Miller Head and Professor. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2024/67m-in-federal-grants-awarded-to-develop-tech-to-monitor-treat-chronic-eye-diseases" target="_blank" rel="noopener noreferrer">$6.7 M in federal grants awarded to develop tech to monitor, treat chronic eye disease. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2024/bringing-the-latest-in-medical-technologies-to-the-youngest-patients" target="_blank" rel="noopener noreferrer">Purdue, IU and Cook Medical partner for 3-pronged approach to improve pediatric care. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li>The Biomedical Engineering Department at Purdue University in Indianapolis officially integrated with the Weldon School of Biomedical Engineering family.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2023" data-decade="2020" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><div class="timeline-img-placeholder" role="img" aria-label="Purdue BME 2023"><span class="placeholder-year">2023</span></div></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2023/aidriven-mobile-health-algorithm-uses-phone-camera-to-detect-blood-vessel-oxygen-levels" target="_blank" rel="noopener noreferrer">Al-driven mobile health algorithm uses phone camera to detect blood vessel oxygen levels. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://www.purdue.edu/research/features/stories/purdue-engineer-iu-cardiologist-collaborate-to-offer-innovative-tool-and-fresh-hope-for-babies-with-heart-defects/" target="_blank" rel="noopener noreferrer">Vlachos, IU cardiologist, collaborates to offer an innovative tool and fresh hope for babies with heart defects. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://www.purdue.edu/newsroom/2023/Q1/new-high-tech-startup-developing-smart-contact-lenses-for-glaucoma-diagnosis-and-management/" target="_blank" rel="noopener noreferrer">New high-tech startup developing smart contact lenses for glaucoma diagnosis and management. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2023</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2022" data-decade="2020" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2022</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><div class="timeline-img-placeholder" role="img" aria-label="Purdue BME 2022"><span class="placeholder-year">2022</span></div></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>The online BME degree was launched.</li>
+<li class="has-link"><a href="https://www.purdue.edu/research/features/stories/affordable-cervical-cancer-test-holds-life-preserving-promise/" target="_blank" rel="noopener noreferrer">Linnes develops test that could revolutionize cervical cancer detection. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2022/Purdue-Hanyang-Partnership" target="_blank" rel="noopener noreferrer">Purdue partners with Hanyang University in Seoul to offer dual MS degree. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li>Solorio recipient of METAvivor early Career Award grant for novel platform to measure.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2021" data-decade="2020" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><div class="timeline-img-placeholder" role="img" aria-label="Purdue BME 2021"><span class="placeholder-year">2021</span></div></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2021/2021-Art-In-Research" target="_blank" rel="noopener noreferrer">Inaugural Art in Research exhibit showcases cutting-edge illustrations in biomedical research. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2021/2021-Medical-Device-Regulatory-Training" target="_blank" rel="noopener noreferrer">Regulatory courses help prepare Professional Master&#x27;s Program students. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2021/2021-Neuro-Sig-Area" target="_blank" rel="noopener noreferrer">New Neuroengineering and Neurotechnology signature research area formed to advance biomedical research. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://www.physics.purdue.edu/news/2021/0928_liu_a3d3.html?utm_source=purdue-news&amp;utm_medium=social&amp;utm_campaign=coe-news" target="_blank" rel="noopener noreferrer">Purdue team is part of NSF $15M Al award. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2021/2021-Umulis-New-Head" target="_blank" rel="noopener noreferrer">David Umulis named head of the Weldon School of Biomedical Engineering. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="https://engineering.purdue.edu/BME/AboutUs/News/2021/purdue-no-6-patents" target="_blank" rel="noopener noreferrer">Purdue is a world leader in patents, number 1 in the Big 10. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2021</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div id="decade-None" class="decade-anchor"></div>
+  <div id="decade-2010" class="decade-anchor"></div>
+  <div class="timeline-row" id="year-2019" data-decade="2010" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2019</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2019.jpeg" alt="Purdue BME circa 2019" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Innovation Wing</li>
+<li>Innovation for Clinical Translation Fellowship graduate Program named to honor alumna Leslie Bottorff.</li>
+<li>$2.9M NIH National Institute on Drug Abuse grant awarded to combat opioid crisis.</li>
+<li>Purdue College of Engineering and Indiana University School of Medicine announce major Engineering—Medicine Partnership.</li>
+<li>Marta Gross and Dick Barnes endow named professorships for junior faculty members.</li>
+<li>Biomedical Engineering cumulative licensing revenues exceed $30M.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  <div class="timeline-row" id="year-2018" data-decade="2010" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2018.jpeg" alt="Purdue BME circa 2018" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Construction begins for $18M Innovation Wing for Martin C. Jischke Hall of Biomedical Engineering.</li>
+<li>Professional Master’s Program (PMP) degree in Biomedical Engineering initiated.</li>
+<li>MS BME/MBA dual degree program with Purdue&#x27;s Krannert School of Management established.</li>
+<li>MD/MS BME dual degree program with Indiana University School of Medicine launched.</li>
+<li>Regulatory Science Certificate Program for Medical Devices created.</li>
+<li>NIH T32 Interdisciplinary Training grant in Auditory Neuroscience awarded.</li>
+<li>Center for Healthcare Engineering granted $10M by Regenstrief Foundation.</li>
+<li>For the second year in a row, a Purdue Biomedical Engineering student team wins the Engineering World Health Design Competition.</li>
+<li>Approval of a combined BS/MS (4+1) degree in Biomedical Engineering in West Lafayette and at Indiana University Purdue University in Indianapolis (IUPUI). .</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2018</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2017" data-decade="2010" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2017</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2017.jpeg" alt="Purdue BME circa 2017" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Weldon School of Biomedical Engineering Senior Class Scholarship endowed.</li>
+<li>Grand Challenges Explorations Grant from the Bill &amp; Melinda Gates Foundation awarded.</li>
+<li>This year and next, Biomedical Engineering students dominate at BMES, winning Outstanding Chapter Industry Award, Outstanding Chapter Activity Award, Outstanding Chapter Officer Award, and Undergraduate Student Design and Research Award.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2016" data-decade="2010" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2016.jpg" alt="Purdue BME circa 2016" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Professional Master&#x27;s Program Added.</li>
+<li>Family of orthopedics pioneer endows headship;George Wodicka appointed inaugural Dane A. Miller Head of Biomedical Engineering.</li>
+<li>$10M NIH SPARC grant in electroceuticals awarded.</li>
+<li>30th Biomedical Engineering faculty member hired.</li>
+<li>Senior design team wins NIH NIBIB first prize in DEBUT challenge.</li>
+<li>3 Biomedical Engineering faculty members inducted into National Academy of Inventors.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2016</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2015" data-decade="2010" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2015</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2015.jpg" alt="Purdue BME circa 2015" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Six Biomedical Engineering faculty members promoted to full professor.</li>
+<li>10th faculty member named Purdue University Faculty Scholar.</li>
+<li>$5.4M DARPA grant in implantable neurostimulators awarded.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2014" data-decade="2010" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2014.png" alt="Purdue BME circa 2014" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Federal and foundational research funding doubles over past year.</li>
+<li>10th Biomedical Engineering faculty member receives NSF CAREER Award.</li>
+<li>FDA Food Safety Challenge Grand Prize awarded.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2014</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2013" data-decade="2010" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2013</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2013.jpg" alt="Purdue BME circa 2013" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>1st of three Biomedical Engineering preeminent faculty teams selected for support by Purdue College of Engineering.</li>
+<li>NIH T32 interdisciplinary training grant for diabetes research awarded.</li>
+<li>Study abroad programs with ETH in Switzerland and DTI Denmark launched.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2012" data-decade="2010" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2012.jpg" alt="Purdue BME circa 2012" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>11 Biomedical Engineering faculty members elected to AIMBE College of Fellows.</li>
+<li>Institute for Accessible Science becomes newest biomedical research center in Discovery Park.</li>
+<li>Active US patents exceed 100, with 50 active corporate licenses..</li>
+<li>Biomedical Engineering cumulative licensing revenues exceed $20M.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2012</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2011" data-decade="2010" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2011</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2011.jpg" alt="Purdue BME circa 2011" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Active U.S. patents exceed 100, with 50 active corporate licenses.</li>
+<li>Biomedical Engineering cumulative licensing revenues exceed $20 million.</li>
+<li>12th start-up company based upon biomedical engineering discovery launched.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2010" data-decade="2010" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2010.jpg" alt="Purdue BME circa 2010" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Center for Implantable Devices formed.</li>
+<li>Purdue chapter of Alpha Eta Mu Beta, the Biomedical Engineering Honor Society, created.</li>
+<li>Internship program at National University of Ireland-Galway initiated.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2010</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div id="decade-2000" class="decade-anchor"></div>
+  <div class="timeline-row" id="year-2009" data-decade="2000" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2009</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2009.jpg" alt="Purdue BME circa 2009" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>20th Biomedical Engineering faculty member hired.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  <div class="timeline-row" id="year-2008" data-decade="2000" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2008.jpg" alt="Purdue BME circa 2008" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Undergraduate biomedical engineering program receives ABET accreditation.</li>
+<li>National Science Foundation funds scholarship program in quantitative physiology.</li>
+<li>National Institutes of Health Clinical and Translational Science Institute (CTSI) grant with Indiana University School of Medicine awarded.</li>
+<li>MD/PhD Program receives National Institutes of Health Medical Scientist Training Program (MSTP) funding.</li>
+<li>The new building is formally renamed the Martin C. Jischke Hall of Biomedical Engineering.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2008</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2007" data-decade="2000" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2007</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2007.jpg" alt="Purdue BME circa 2007" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Inaugural biomedical engineering undergraduate class graduates.</li>
+<li>Korean Institute of Science and Technology Nanomedicine research partnership created.</li>
+<li>University of Puerto Rico-Mayaguez graduate education partnership founded.</li>
+<li>Purdue Imaging Center created in partnership with GE Healthcare and Innervision.</li>
+<li>Institute for Biomedical Development launched.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2006" data-decade="2000" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2006.jpg" alt="Purdue BME circa 2006" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li class="has-link"><a href="http://www.youtube.com" target="_blank" rel="noopener noreferrer">The New Home of The Weldon School of Biomedical Engineering in the Martin Jischke Hall of Innovation Dedication. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li class="has-link"><a href="http://www.youtube.com" target="_blank" rel="noopener noreferrer">Celebrating a Legend: Leslie A. Geddes. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
+<li>Leslie Geddes receives the National Medal of Technology in a White House ceremony.</li>
+<li>The new home of the Weldon School of Biomedical Engineering is dedicated.</li>
+<li>Cook Group, Inc. endows Leslie A. Geddes Professorship.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2006</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2005" data-decade="2000" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2005</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2005.jpg" alt="Purdue BME circa 2005" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>The Biomedical Entrepreneurship graduate certificate program is started in collaboration with the Krannert School of Management through the generous support of the Guidant Foundation and the C.R. Bard Foundation.</li>
+<li>The Havel and Decker Families endow the first undergraduate scholarship at the School.</li>
+<li>Biomedical Science graduate program with Veterinary Medicine launched.</li>
+<li>Biomedical Engineering undergraduate industrial internship program created.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2004" data-decade="2000" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2004.jpg" alt="Purdue BME circa 2004" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>In recognition of the generosity of the Weldon family, the Purdue Board of Trustees elevates the Department of Biomedical Engineering to the Weldon School of Biomedical Engineering.</li>
+<li>The Indiana Commission for Higher Education approved the BSBME degree in 2003. The first Freshman class was admitted in the fall of 2004 in West Lafayette and at Indiana University Purdue University in Indianapolis (IUPUI).</li>
+<li>The Biomedical Engineering program evolved to full department status at Indiana University Purdue University in Indianapolis (IUPUI). Through the use of Commitment to Excellence and Chancellor’s Reallocation funds, five new tenuretrack positions were approved, along with resources for staff support and operating funds.</li>
+<li>The Biomedical Engineering Department at Indiana University Purdue University in Indianapolis received a $1.9M gift from the Guidant Foundation, establishing the Thomas J Linnemeier Guidant Foundation Chair in Biomedical Engineering.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2004</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2003" data-decade="2000" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2003</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2003.jpg" alt="Purdue BME circa 2003" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Whitaker Foundation funding for building granted Ronald W. Dollens Graduate Scholarship established by the Guidant Foundation for graduate students in biomedical engineering and pharmacy.</li>
+<li>Groundbreaking takes places on a new biomedical engineering building.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2002" data-decade="2000" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2002.jpg" alt="Purdue BME circa 2002" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>State of Indiana funding for new building and program growth secured.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2002</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2001" data-decade="2000" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2001</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2001.jpg" alt="Purdue BME circa 2001" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Creation of an undergraduate biomedical engineering program is approved by the Purdue Board of Trustees and the Indiana Commission for Higher Education.</li>
+<li>Joint MD/PhD program is formed with the Indiana University School of Medicine.</li>
+<li>First PhD presented in West Lafayette and at Indiana University Purdue University in Indianapolis (IUPUI).</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-2000" data-decade="2000" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/2000.jpg" alt="Purdue BME circa 2000" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Department receives the prestigious Tony and Mary Hulman Health Achievement Award from the Indiana Public Health Foundation.</li>
+<li>The Biomedical Engineering program cemented its status as a joint effort, with programs in orthopedic biomechanics, cardiovascular instrumentation and tissue engineering.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">2000</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div id="decade-1990" class="decade-anchor"></div>
+  <div class="timeline-row" id="year-1999" data-decade="1990" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1999</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1999.jpg" alt="Purdue BME circa 1999" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>National Science Foundation IGERT grant in Therapeutic and Diagnostic Devices awarded.</li>
+<li>First Master’s presented in West Lafayette and at Indiana University Purdue University in Indianapolis (IUPUI).</li></ul>
+      </div>
+    </div></div>
+  </div>
+  <div class="timeline-row" id="year-1998" data-decade="1990" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1998.jpg" alt="Purdue BME circa 1998" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>The Department of Biomedical Engineering is formed; George Wodicka named head of the new department.</li>
+<li>Whitaker Foundation Special Award received.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1998</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-1996" data-decade="1990" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1996</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1996.jpg" alt="Purdue BME circa 1996" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Alumni David and Stephen Grubbs fund an annual research stipend for students.</li>
+<li>Biomedical Engineering Master’s and Graduate Programs in West Lafayette and at Indiana University Purdue University in Indianapolis (IUPUI) were approved by the Purdue Board of Trustees and sanctioned by the Indiana Commission for Higher Education, joining expertise with the medical needs for the enhancement of healthcare.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-1992" data-decade="1990" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1992.jpg" alt="Purdue BME circa 1992" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Alumnus Neal Fearnot creates the Fearnot Award to recognize the student giving the most outstanding summer seminar presentation on their research.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1992</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-1991" data-decade="1990" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1991</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1991.jpg" alt="Purdue BME circa 1991" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Leslie Geddes “retires” as Center Director and Showalter Professor to become the Showalter Distinguished Professor Emeritus of Biomedical Engineering.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-1990" data-decade="1990" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><div class="timeline-img-placeholder" role="img" aria-label="Purdue BME 1990"><span class="placeholder-year">1990</span></div></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>The Biomechanics and Biomaterials Research Center (BBRC) was established to foster inter-institutional research between Purdue University and Indiana University faculty.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1990</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div id="decade-1980" class="decade-anchor"></div>
+  <div class="timeline-row" id="year-1987" data-decade="1980" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1987</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1987.jpg" alt="Purdue BME circa 1987" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Leslie Geddes creates the Geddes-Laufman-Greatbatch Graduate Student Award for productivity and service.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  <div class="timeline-row" id="year-1985" data-decade="1980" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1985.jpg" alt="Purdue BME circa 1985" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>The Biomedical Engineering Center is formally renamed the William A. Hillenbrand Biomedical Engineering Center by the Purdue University Trustees.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1985</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div id="decade-1970" class="decade-anchor"></div>
+  <div class="timeline-row" id="year-1976" data-decade="1970" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1976</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1976.jpg" alt="Purdue BME circa 1976" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>The Biomedical Engineering Center moves into the newly completed Potter Engineering Building.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  <div class="timeline-row" id="year-1975" data-decade="1970" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1975.jpg" alt="Purdue BME circa 1975" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>First biomedical engineering course (EE522) was developed and taught.</li>
+<li>Norman Weldon awards first grant received by the Center, $25,000, to create the best automatic implanted cardioverter defibrillator.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1975</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  
+  <div class="timeline-row" id="year-1974" data-decade="1970" data-side="right">
+    <div class="tl-left"></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1974</div>
+      </div>
+    </div>
+    <div class="tl-right">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1974.jpg" alt="Purdue BME circa 1974" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>Leslie Geddes, Joe Bourland, Willis Tacker and Charles Babbs create the Biomedical Engineering Center.</li>
+<li>Leslie Geddes named Director of the Biomedical Engineering Center and the Showalter Professor of Biomedical Engineering.</li>
+<li>Offices and laboratories were in the basement of the Electrical Engineering Building.</li></ul>
+      </div>
+    </div></div>
+  </div>
+  
+  <div class="timeline-row" id="year-1972" data-decade="1970" data-side="left">
+    <div class="tl-left">    <div class="timeline-card">
+      <div class="card-media"><img src="images/1972.jpg" alt="Purdue BME circa 1972" class="timeline-img" loading="lazy"></div>
+      <div class="card-body-inner">
+        <ul class="events-list"><li>William Hillenbrand anonymously donates $500,000 to establish biomedical engineering research at Purdue.</li>
+<li>Grace Showalter endows the Showalter Distinguished Professorship of Biomedical Engineering.</li></ul>
+      </div>
+    </div></div>
+    <div class="tl-spine">
+      <div class="spine-node">
+        <div class="spine-diamond"></div>
+        <div class="year-label">1972</div>
+      </div>
+    </div>
+    <div class="tl-right"></div>
+  </div>
+  </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="page-footer">
+    <p>Weldon School of Biomedical Engineering &bull; Purdue University &bull; West Lafayette, IN 47907<br>
+    <a href="https://engineering.purdue.edu/BME" target="_blank" rel="noopener">engineering.purdue.edu/BME</a></p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // ── Scroll-in animation via IntersectionObserver ──
+    const rows = document.querySelectorAll('.timeline-row');
+    const rowObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          rowObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+    rows.forEach(r => rowObserver.observe(r));
+
+    // ── Sticky nav: highlight active decade ──
+    const navItems   = document.querySelectorAll('.nav-item');
+    const anchors    = document.querySelectorAll('.decade-anchor');
+    const connectors = document.querySelectorAll('.nav-connector');
+
+    function getActiveDecade() {
+      let active = null;
+      anchors.forEach(a => {
+        const rect = a.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.35) active = a.id;
+      });
+      return active;
+    }
+
+    function updateNav() {
+      const activeId = getActiveDecade();
+      navItems.forEach(item => {
+        const target = item.dataset.target;
+        item.classList.toggle('active', activeId && target === activeId);
+      });
+      // Colour connectors between active and previous
+      let pastActive = false;
+      navItems.forEach((item, idx) => {
+        if (item.classList.contains('active')) pastActive = true;
+        if (idx > 0) {
+          connectors[idx - 1]?.style.setProperty('background', pastActive ? 'var(--pu-gold)' : 'var(--pu-steam)');
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
+
+    // ── Nav click: smooth scroll to decade ──
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const target = document.getElementById(item.dataset.target);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      item.querySelector('.nav-dot').addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          item.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
