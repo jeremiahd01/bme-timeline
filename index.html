@@ -36,7 +36,7 @@
       --card-border:  var(--card-border);  /* warm card border */
       --card-divider: var(--card-divider);  /* subtle event row divider */
       --spine-width: 3px;
-      --card-gap:    48px;
+      --card-gap:    28px;
     }
 
     /* ── Base ── */
@@ -57,7 +57,7 @@
     }
     .page-header__eyebrow {
       font-family: var(--pu-font-sans);
-      font-size: 0.8rem;
+      font-size: 1rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--pu-gold);
@@ -101,8 +101,6 @@
     /* ── Timeline Wrapper: three-column layout ── */
     .timeline-wrapper {
       position: relative;
-      max-width: 1100px;
-      margin: 0 auto;
       padding: 0 80px 0 40px; /* right padding leaves room for sticky nav */
     }
 
@@ -110,7 +108,7 @@
     .timeline-wrapper::before {
       content: '';
       position: absolute;
-      left: calc(50% + 20px); /* offset for the 40px left padding asymmetry */
+      left: calc(50% - 20px); /* corrected: asymmetric padding shifts center left */
       top: 0;
       bottom: 0;
       width: var(--spine-width);
@@ -122,7 +120,7 @@
     /* ── Timeline Row ── */
     .timeline-row {
       display: grid;
-      grid-template-columns: 1fr 120px 1fr;
+      grid-template-columns: 1fr 90px 1fr;
       gap: 0;
       margin-bottom: 3.5rem;
       align-items: start;
@@ -153,33 +151,30 @@
       padding-top: 1.25rem;
     }
 
-    /* ── Spine node: diamond + year ── */
+    /* ── Spine node: year pill ── */
     .spine-node {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
     }
 
-    .spine-diamond {
-      width: 14px;
-      height: 14px;
+    .year-pill {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
       background: var(--pu-gold);
-      transform: rotate(45deg);
-      border: 2px solid var(--pu-aged);
+      color: var(--pu-black);
+      font-family: var(--pu-font-sans);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      position: relative;
+      box-shadow: 0 1px 5px rgba(0,0,0,0.18);
       flex-shrink: 0;
-    }
-
-    .year-label {
-      font-family: var(--pu-font-display);
-      font-size: 0.85rem;
-      letter-spacing: 0.12em;
-      color: var(--pu-steel);
-      text-transform: uppercase;
-      white-space: nowrap;
-      background: var(--pu-white);
-      padding: 2px 6px;
-      border-bottom: 2px solid var(--pu-gold);
     }
 
     /* ── Connector lines (left card → spine, right card → spine) ── */
@@ -226,35 +221,42 @@
 
     /* ── Card Media ── */
     .card-media {
+      position: relative;
+      height: 300px;
       overflow: hidden;
-      max-height: 280px;
+      background: var(--pu-black);
+    }
+
+    /* Blurred backdrop — same image, blurred + darkened to fill space */
+    .media-backdrop {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: blur(14px) brightness(0.45);
+      transform: scale(1.08); /* prevents blur edge fringing */
+      z-index: 0;
     }
 
     .timeline-img {
+      position: relative;
+      z-index: 1;
       width: 100%;
       height: 100%;
-      max-height: 280px;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
       transition: transform 0.4s ease;
     }
 
-    .timeline-card:hover .timeline-img {
-      transform: scale(1.03);
-    }
 
     /* ── Placeholder tile ── */
     .timeline-img-placeholder {
       width: 100%;
-      height: 180px;
-      background:
-        repeating-linear-gradient(
-          -45deg,
-          var(--pu-gold)     0px,
-          var(--pu-gold)     8px,
-          var(--pu-black)    8px,
-          var(--pu-black)   16px
-        );
+      height: 100%;
+      background-color: var(--pu-black);
+      background-image:
+        radial-gradient(circle, var(--pu-steel) 1px, transparent 1px);
+      background-size: 22px 22px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -264,8 +266,8 @@
       font-family: var(--pu-font-display);
       font-size: 2.5rem;
       letter-spacing: 0.1em;
-      color: var(--pu-white);
-      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+      color: var(--pu-gold);
+      opacity: 0.55;
       text-transform: uppercase;
     }
 
@@ -282,7 +284,7 @@
 
     .events-list li {
       font-family: var(--pu-font-sans);
-      font-size: 0.875rem;
+      font-size: 1rem;
       line-height: 1.55;
       color: var(--pu-steel);
       padding: 0.55rem 0 0.55rem 0.85rem;
@@ -378,7 +380,7 @@
       background: var(--pu-black);
       color: var(--pu-gold);
       font-family: var(--pu-font-display);
-      font-size: 0.7rem;
+      font-size: 1rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       padding: 3px 8px;
@@ -414,7 +416,7 @@
     }
     .page-footer p {
       color: var(--pu-railway-gray);
-      font-size: 0.8rem;
+      font-size: 1rem;
       margin: 0;
     }
     .page-footer a {
@@ -519,37 +521,6 @@
       </div>
     </div>
   </nav>
-    <div class="nav-connector"></div>
-    <div class="nav-item" data-target="decade-2010">
-      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 2010s">
-        <span class="nav-tooltip">2010s</span>
-      </div>
-    </div>
-    <div class="nav-connector"></div>
-    <div class="nav-item" data-target="decade-2000">
-      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 2000s">
-        <span class="nav-tooltip">2000s</span>
-      </div>
-    </div>
-    <div class="nav-connector"></div>
-    <div class="nav-item" data-target="decade-1990">
-      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 1990s">
-        <span class="nav-tooltip">1990s</span>
-      </div>
-    </div>
-    <div class="nav-connector"></div>
-    <div class="nav-item" data-target="decade-1980">
-      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 1980s">
-        <span class="nav-tooltip">1980s</span>
-      </div>
-    </div>
-    <div class="nav-connector"></div>
-    <div class="nav-item" data-target="decade-1970">
-      <div class="nav-dot" role="button" tabindex="0" aria-label="Jump to 1970s">
-        <span class="nav-tooltip">1970s</span>
-      </div>
-    </div>
-  </nav>
 
   <!-- ── Timeline ── -->
   <section class="timeline-section" aria-label="Timeline of Purdue BME history">
@@ -570,10 +541,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2025</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2025</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -581,10 +549,7 @@
   <div class="timeline-row" id="year-2024" data-decade="2020" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2024</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2024</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
       <div class="card-media"><div class="timeline-img-placeholder" role="img" aria-label="Purdue BME 2024"><span class="placeholder-year">2024</span></div></div>
@@ -613,10 +578,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2023</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2023</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -624,10 +586,7 @@
   <div class="timeline-row" id="year-2022" data-decade="2020" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2022</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2022</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
       <div class="card-media"><div class="timeline-img-placeholder" role="img" aria-label="Purdue BME 2022"><span class="placeholder-year">2022</span></div></div>
@@ -653,10 +612,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2021</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2021</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -666,13 +622,10 @@
   <div class="timeline-row" id="year-2019" data-decade="2010" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2019</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2019</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2019.jpeg" alt="Purdue BME circa 2019" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2019.jpeg')"></div><img src="images/2019.jpeg" alt="Purdue BME circa 2019" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Innovation Wing</li>
 <li>Innovation for Clinical Translation Fellowship graduate Program named to honor alumna Leslie Bottorff.</li>
@@ -685,7 +638,7 @@
   </div>
   <div class="timeline-row" id="year-2018" data-decade="2010" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2018.jpeg" alt="Purdue BME circa 2018" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2018.jpeg')"></div><img src="images/2018.jpeg" alt="Purdue BME circa 2018" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Construction begins for $18M Innovation Wing for Martin C. Jischke Hall of Biomedical Engineering.</li>
 <li>Professional Master’s Program (PMP) degree in Biomedical Engineering initiated.</li>
@@ -699,10 +652,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2018</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2018</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -710,13 +660,10 @@
   <div class="timeline-row" id="year-2017" data-decade="2010" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2017</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2017</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2017.jpeg" alt="Purdue BME circa 2017" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2017.jpeg')"></div><img src="images/2017.jpeg" alt="Purdue BME circa 2017" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Weldon School of Biomedical Engineering Senior Class Scholarship endowed.</li>
 <li>Grand Challenges Explorations Grant from the Bill &amp; Melinda Gates Foundation awarded.</li>
@@ -727,7 +674,7 @@
   
   <div class="timeline-row" id="year-2016" data-decade="2010" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2016.jpg" alt="Purdue BME circa 2016" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2016.jpg')"></div><img src="images/2016.jpg" alt="Purdue BME circa 2016" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Professional Master&#x27;s Program Added.</li>
 <li>Family of orthopedics pioneer endows headship;George Wodicka appointed inaugural Dane A. Miller Head of Biomedical Engineering.</li>
@@ -738,10 +685,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2016</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2016</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -749,13 +693,10 @@
   <div class="timeline-row" id="year-2015" data-decade="2010" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2015</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2015</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2015.jpg" alt="Purdue BME circa 2015" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2015.jpg')"></div><img src="images/2015.jpg" alt="Purdue BME circa 2015" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Six Biomedical Engineering faculty members promoted to full professor.</li>
 <li>10th faculty member named Purdue University Faculty Scholar.</li>
@@ -766,7 +707,7 @@
   
   <div class="timeline-row" id="year-2014" data-decade="2010" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2014.png" alt="Purdue BME circa 2014" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2014.png')"></div><img src="images/2014.png" alt="Purdue BME circa 2014" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Federal and foundational research funding doubles over past year.</li>
 <li>10th Biomedical Engineering faculty member receives NSF CAREER Award.</li>
@@ -774,10 +715,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2014</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2014</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -785,13 +723,10 @@
   <div class="timeline-row" id="year-2013" data-decade="2010" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2013</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2013</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2013.jpg" alt="Purdue BME circa 2013" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2013.jpg')"></div><img src="images/2013.jpg" alt="Purdue BME circa 2013" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>1st of three Biomedical Engineering preeminent faculty teams selected for support by Purdue College of Engineering.</li>
 <li>NIH T32 interdisciplinary training grant for diabetes research awarded.</li>
@@ -802,7 +737,7 @@
   
   <div class="timeline-row" id="year-2012" data-decade="2010" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2012.jpg" alt="Purdue BME circa 2012" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2012.jpg')"></div><img src="images/2012.jpg" alt="Purdue BME circa 2012" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>11 Biomedical Engineering faculty members elected to AIMBE College of Fellows.</li>
 <li>Institute for Accessible Science becomes newest biomedical research center in Discovery Park.</li>
@@ -811,10 +746,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2012</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2012</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -822,13 +754,10 @@
   <div class="timeline-row" id="year-2011" data-decade="2010" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2011</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2011</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2011.jpg" alt="Purdue BME circa 2011" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2011.jpg')"></div><img src="images/2011.jpg" alt="Purdue BME circa 2011" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Active U.S. patents exceed 100, with 50 active corporate licenses.</li>
 <li>Biomedical Engineering cumulative licensing revenues exceed $20 million.</li>
@@ -839,7 +768,7 @@
   
   <div class="timeline-row" id="year-2010" data-decade="2010" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2010.jpg" alt="Purdue BME circa 2010" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2010.jpg')"></div><img src="images/2010.jpg" alt="Purdue BME circa 2010" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Center for Implantable Devices formed.</li>
 <li>Purdue chapter of Alpha Eta Mu Beta, the Biomedical Engineering Honor Society, created.</li>
@@ -847,10 +776,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2010</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2010</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -859,13 +785,10 @@
   <div class="timeline-row" id="year-2009" data-decade="2000" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2009</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2009</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2009.jpg" alt="Purdue BME circa 2009" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2009.jpg')"></div><img src="images/2009.jpg" alt="Purdue BME circa 2009" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>20th Biomedical Engineering faculty member hired.</li></ul>
       </div>
@@ -873,7 +796,7 @@
   </div>
   <div class="timeline-row" id="year-2008" data-decade="2000" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2008.jpg" alt="Purdue BME circa 2008" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2008.jpg')"></div><img src="images/2008.jpg" alt="Purdue BME circa 2008" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Undergraduate biomedical engineering program receives ABET accreditation.</li>
 <li>National Science Foundation funds scholarship program in quantitative physiology.</li>
@@ -883,10 +806,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2008</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2008</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -894,13 +814,10 @@
   <div class="timeline-row" id="year-2007" data-decade="2000" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2007</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2007</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2007.jpg" alt="Purdue BME circa 2007" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2007.jpg')"></div><img src="images/2007.jpg" alt="Purdue BME circa 2007" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Inaugural biomedical engineering undergraduate class graduates.</li>
 <li>Korean Institute of Science and Technology Nanomedicine research partnership created.</li>
@@ -913,7 +830,7 @@
   
   <div class="timeline-row" id="year-2006" data-decade="2000" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2006.jpg" alt="Purdue BME circa 2006" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2006.jpg')"></div><img src="images/2006.jpg" alt="Purdue BME circa 2006" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li class="has-link"><a href="http://www.youtube.com" target="_blank" rel="noopener noreferrer">The New Home of The Weldon School of Biomedical Engineering in the Martin Jischke Hall of Innovation Dedication. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
 <li class="has-link"><a href="http://www.youtube.com" target="_blank" rel="noopener noreferrer">Celebrating a Legend: Leslie A. Geddes. <svg class="ext-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M1.5 10.5l9-9M10.5 10.5V1.5h-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></a></li>
@@ -923,10 +840,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2006</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2006</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -934,13 +848,10 @@
   <div class="timeline-row" id="year-2005" data-decade="2000" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2005</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2005</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2005.jpg" alt="Purdue BME circa 2005" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2005.jpg')"></div><img src="images/2005.jpg" alt="Purdue BME circa 2005" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>The Biomedical Entrepreneurship graduate certificate program is started in collaboration with the Krannert School of Management through the generous support of the Guidant Foundation and the C.R. Bard Foundation.</li>
 <li>The Havel and Decker Families endow the first undergraduate scholarship at the School.</li>
@@ -952,7 +863,7 @@
   
   <div class="timeline-row" id="year-2004" data-decade="2000" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2004.jpg" alt="Purdue BME circa 2004" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2004.jpg')"></div><img src="images/2004.jpg" alt="Purdue BME circa 2004" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>In recognition of the generosity of the Weldon family, the Purdue Board of Trustees elevates the Department of Biomedical Engineering to the Weldon School of Biomedical Engineering.</li>
 <li>The Indiana Commission for Higher Education approved the BSBME degree in 2003. The first Freshman class was admitted in the fall of 2004 in West Lafayette and at Indiana University Purdue University in Indianapolis (IUPUI).</li>
@@ -961,10 +872,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2004</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2004</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -972,13 +880,10 @@
   <div class="timeline-row" id="year-2003" data-decade="2000" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2003</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2003</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2003.jpg" alt="Purdue BME circa 2003" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2003.jpg')"></div><img src="images/2003.jpg" alt="Purdue BME circa 2003" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Whitaker Foundation funding for building granted Ronald W. Dollens Graduate Scholarship established by the Guidant Foundation for graduate students in biomedical engineering and pharmacy.</li>
 <li>Groundbreaking takes places on a new biomedical engineering building.</li></ul>
@@ -988,16 +893,13 @@
   
   <div class="timeline-row" id="year-2002" data-decade="2000" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2002.jpg" alt="Purdue BME circa 2002" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2002.jpg')"></div><img src="images/2002.jpg" alt="Purdue BME circa 2002" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>State of Indiana funding for new building and program growth secured.</li></ul>
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2002</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2002</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -1005,13 +907,10 @@
   <div class="timeline-row" id="year-2001" data-decade="2000" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2001</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2001</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2001.jpg" alt="Purdue BME circa 2001" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2001.jpg')"></div><img src="images/2001.jpg" alt="Purdue BME circa 2001" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Creation of an undergraduate biomedical engineering program is approved by the Purdue Board of Trustees and the Indiana Commission for Higher Education.</li>
 <li>Joint MD/PhD program is formed with the Indiana University School of Medicine.</li>
@@ -1022,17 +921,14 @@
   
   <div class="timeline-row" id="year-2000" data-decade="2000" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/2000.jpg" alt="Purdue BME circa 2000" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/2000.jpg')"></div><img src="images/2000.jpg" alt="Purdue BME circa 2000" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Department receives the prestigious Tony and Mary Hulman Health Achievement Award from the Indiana Public Health Foundation.</li>
 <li>The Biomedical Engineering program cemented its status as a joint effort, with programs in orthopedic biomechanics, cardiovascular instrumentation and tissue engineering.</li></ul>
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">2000</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">2000</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -1041,13 +937,10 @@
   <div class="timeline-row" id="year-1999" data-decade="1990" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1999</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1999</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1999.jpg" alt="Purdue BME circa 1999" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1999.jpg')"></div><img src="images/1999.jpg" alt="Purdue BME circa 1999" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>National Science Foundation IGERT grant in Therapeutic and Diagnostic Devices awarded.</li>
 <li>First Master’s presented in West Lafayette and at Indiana University Purdue University in Indianapolis (IUPUI).</li></ul>
@@ -1056,17 +949,14 @@
   </div>
   <div class="timeline-row" id="year-1998" data-decade="1990" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1998.jpg" alt="Purdue BME circa 1998" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1998.jpg')"></div><img src="images/1998.jpg" alt="Purdue BME circa 1998" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>The Department of Biomedical Engineering is formed; George Wodicka named head of the new department.</li>
 <li>Whitaker Foundation Special Award received.</li></ul>
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1998</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1998</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -1074,13 +964,10 @@
   <div class="timeline-row" id="year-1996" data-decade="1990" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1996</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1996</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1996.jpg" alt="Purdue BME circa 1996" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1996.jpg')"></div><img src="images/1996.jpg" alt="Purdue BME circa 1996" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Alumni David and Stephen Grubbs fund an annual research stipend for students.</li>
 <li>Biomedical Engineering Master’s and Graduate Programs in West Lafayette and at Indiana University Purdue University in Indianapolis (IUPUI) were approved by the Purdue Board of Trustees and sanctioned by the Indiana Commission for Higher Education, joining expertise with the medical needs for the enhancement of healthcare.</li></ul>
@@ -1090,16 +977,13 @@
   
   <div class="timeline-row" id="year-1992" data-decade="1990" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1992.jpg" alt="Purdue BME circa 1992" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1992.jpg')"></div><img src="images/1992.jpg" alt="Purdue BME circa 1992" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Alumnus Neal Fearnot creates the Fearnot Award to recognize the student giving the most outstanding summer seminar presentation on their research.</li></ul>
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1992</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1992</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -1107,13 +991,10 @@
   <div class="timeline-row" id="year-1991" data-decade="1990" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1991</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1991</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1991.jpg" alt="Purdue BME circa 1991" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1991.jpg')"></div><img src="images/1991.jpg" alt="Purdue BME circa 1991" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Leslie Geddes “retires” as Center Director and Showalter Professor to become the Showalter Distinguished Professor Emeritus of Biomedical Engineering.</li></ul>
       </div>
@@ -1128,10 +1009,7 @@
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1990</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1990</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -1140,13 +1018,10 @@
   <div class="timeline-row" id="year-1987" data-decade="1980" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1987</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1987</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1987.jpg" alt="Purdue BME circa 1987" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1987.jpg')"></div><img src="images/1987.jpg" alt="Purdue BME circa 1987" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Leslie Geddes creates the Geddes-Laufman-Greatbatch Graduate Student Award for productivity and service.</li></ul>
       </div>
@@ -1154,16 +1029,13 @@
   </div>
   <div class="timeline-row" id="year-1985" data-decade="1980" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1985.jpg" alt="Purdue BME circa 1985" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1985.jpg')"></div><img src="images/1985.jpg" alt="Purdue BME circa 1985" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>The Biomedical Engineering Center is formally renamed the William A. Hillenbrand Biomedical Engineering Center by the Purdue University Trustees.</li></ul>
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1985</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1985</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -1172,13 +1044,10 @@
   <div class="timeline-row" id="year-1976" data-decade="1970" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1976</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1976</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1976.jpg" alt="Purdue BME circa 1976" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1976.jpg')"></div><img src="images/1976.jpg" alt="Purdue BME circa 1976" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>The Biomedical Engineering Center moves into the newly completed Potter Engineering Building.</li></ul>
       </div>
@@ -1186,17 +1055,14 @@
   </div>
   <div class="timeline-row" id="year-1975" data-decade="1970" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1975.jpg" alt="Purdue BME circa 1975" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1975.jpg')"></div><img src="images/1975.jpg" alt="Purdue BME circa 1975" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>First biomedical engineering course (EE522) was developed and taught.</li>
 <li>Norman Weldon awards first grant received by the Center, $25,000, to create the best automatic implanted cardioverter defibrillator.</li></ul>
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1975</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1975</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
@@ -1204,13 +1070,10 @@
   <div class="timeline-row" id="year-1974" data-decade="1970" data-side="right">
     <div class="tl-left"></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1974</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1974</div></div>
     </div>
     <div class="tl-right">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1974.jpg" alt="Purdue BME circa 1974" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1974.jpg')"></div><img src="images/1974.jpg" alt="Purdue BME circa 1974" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>Leslie Geddes, Joe Bourland, Willis Tacker and Charles Babbs create the Biomedical Engineering Center.</li>
 <li>Leslie Geddes named Director of the Biomedical Engineering Center and the Showalter Professor of Biomedical Engineering.</li>
@@ -1221,17 +1084,14 @@
   
   <div class="timeline-row" id="year-1972" data-decade="1970" data-side="left">
     <div class="tl-left">    <div class="timeline-card">
-      <div class="card-media"><img src="images/1972.jpg" alt="Purdue BME circa 1972" class="timeline-img" loading="lazy"></div>
+      <div class="card-media"><div class="media-backdrop" style="background-image:url('images/1972.jpg')"></div><img src="images/1972.jpg" alt="Purdue BME circa 1972" class="timeline-img" loading="lazy"></div>
       <div class="card-body-inner">
         <ul class="events-list"><li>William Hillenbrand anonymously donates $500,000 to establish biomedical engineering research at Purdue.</li>
 <li>Grace Showalter endows the Showalter Distinguished Professorship of Biomedical Engineering.</li></ul>
       </div>
     </div></div>
     <div class="tl-spine">
-      <div class="spine-node">
-        <div class="spine-diamond"></div>
-        <div class="year-label">1972</div>
-      </div>
+      <div class="spine-node"><div class="year-pill">1972</div></div>
     </div>
     <div class="tl-right"></div>
   </div>
